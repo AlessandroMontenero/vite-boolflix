@@ -1,30 +1,85 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import appHeader from './components/appHeader.vue'
+import appMain from './components/main/appMain.vue'
+import appFooter from './components/appFooter.vue'
+import axios from 'axios'
+import { store } from './store.js'
+
+
+export default {
+    components: {
+      appHeader,
+      appMain,
+      appFooter
+    },
+    data() {
+      return {
+        store
+      }
+    },
+    methods: {
+      newResearch(research){
+        store.currentMovies = []
+        store.currentPerson = []
+        store.currentTV = []
+        store.currentLang = research.lang
+        axios.get(store.base_url + 'search/multi?api_key=' + store.api_key + '&query=' + research.query +'&page=1&language=' + research.lang)
+            .then(function (response) {
+              for (let i = 1; i <= response.data.total_pages; i++) {
+                axios.get(store.base_url + 'search/multi?api_key=' + store.api_key + '&query=' + research.query +'&page=' + i + '&language=' + research.lang)
+                .then(function(response){
+                let moviesCategories = []
+                let moviesCategoriesIndex = 0
+                  for (let newItem of response.data.results) {
+                    if (newItem.media_type == "movie") {
+                      if (newItem.backdrop_path){
+                        store.currentMovies.push(newItem)
+                        axios.get(store.base_url + '/genre/movie/list?api_key=' + store.api_key +'&language='+research.lang)
+                        .then(function (response){
+                          for (let newMovie of store.currentMovies) {
+                            let thisMovieCategories = []
+                            for (let genre of response.data.genres) {
+                              for (let id of newMovie.genre_ids){
+                                if (id == genre.id){
+                                  thisMovieCategories.push(genre.name)
+                                }
+                              }
+                            }
+                            moviesCategories[moviesCategoriesIndex] = thisMovieCategories
+                            moviesCategoriesIndex++
+                          }
+                          store.currentMoviesCategories = moviesCategories
+                        })
+                      }
+                    }
+                    else if (newItem.media_type == "tv") {
+                      store.currentTV.push(newItem)
+                    }
+                    else if (newItem.media_type == "person") {
+                      store.currentPerson.push(newItem)
+                    }
+                  }
+                })
+              }
+            })
+      }
+    },
+    created() {
+    }
+}
+
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <appHeader @new-research="(research)=>newResearch(research)"/>
+  <appMain :items-data="store"/>
+  <appFooter />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+<style lang="scss">
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
 }
 </style>
