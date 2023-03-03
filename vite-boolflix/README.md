@@ -13,4 +13,6 @@
     |_**APP FOOTER** //footer section
 
 ### METHOD: 
-    Le chiamate vengono effettuate da *App*, che riceve le queries di ricerca dai componenti (es. *Header*) tramite $emit. Al completamento della chiamata archivia la risposta in *store.js*, così da renderla accessibile a *main* per la creazione della pagina utente.
+    Le chiamate vengono effettuate da *App*, che riceve le queries di ricerca dai componenti (es. *Header*) tramite $emit.
+     Al completamento della chiamata archivia la risposta in *store.js*, così da renderla accessibile a *main* 
+     per la creazione della pagina utente.
