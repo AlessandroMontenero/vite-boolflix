@@ -9,9 +9,12 @@ export default {
         movieCard,
         personCard
     },
-    methods: {
-    },
-    created() {
+    data() {
+        return {
+            moviesToShow: 16,
+            tvToShow: 16,
+            peoplesToShow: 6,
+        }
     }
 }
 </script>
@@ -20,15 +23,26 @@ export default {
     <div class="container">
         <section class="movies" v-if="itemsData.currentMovies.length">
             <span class="sectionTitle">Film</span>
-            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index"/> <br>
+            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= moviesToShow"/> <br>
+            <div v-show="itemsData.currentMovies.length >= moviesToShow" class="showMore" @click="moviesToShow += 18"> 
+                SHOW MORE
+                <i class="fa-solid fa-arrow-right"></i></div>
         </section>
         <section class="tv" v-if="itemsData.currentTV.length">
             <span class="sectionTitle">TV Series</span>
-            <movieCard v-for="card in itemsData.currentTV" :card-data="card" /> <br>
+            <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" v-show="index <= tvToShow" /> 
+            <div v-show="itemsData.currentTV.length >= tvToShow" class="showMore" @click="tvToShow += 18"> 
+                SHOW MORE
+                <i class="fa-solid fa-arrow-right"></i></div>
+
         </section>
-        <section class="person" v-if="itemsData.currentPerson.length">
+        <section class="person" v-if="itemsData.currentPerson.length" >
             <span class="sectionTitle">Peoples</span>
-            <personCard v-for="card in itemsData.currentPerson" :card-data="card" /> <br>
+            <personCard v-for="(card, index) in itemsData.currentPerson" :card-data="card" v-show="index <= peoplesToShow"/>
+            <div v-show="itemsData.currentPerson.length >= peoplesToShow" class="showMorePeople" @click="peoplesToShow += 8">
+                SHOW MORE
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
         </section>
     </div>
 
@@ -54,6 +68,23 @@ export default {
         section {
             display: flex;
             flex-wrap: wrap;
+            .showMore {
+                    width: calc(95% / 6);
+                    margin-right: 10px;
+                    margin-bottom: 3rem;
+                    aspect-ratio: 12 / 7.5;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+            }
+            .showMorePeople {
+                width: calc(95% / 4);
+                margin-bottom: 1rem;
+                aspect-ratio: 12 / 5;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         }
     }
 

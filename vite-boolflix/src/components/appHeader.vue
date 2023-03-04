@@ -3,7 +3,7 @@ export default {
     data() {
         return {
             query: '',
-            actualLangIndex: 0,
+            actualLangIndex: 2,
             actualLang: 'it-IT',
             languages: [
                 {
@@ -40,9 +40,9 @@ export default {
 <template>
 <header>
     <img src="src/images/logo.png" alt="" class="logo">
-    <input type="text" v-model="query" @change="submit" placeholder="Search...">
+    <input type="text" v-model="query" v-on:keyup.enter="submit" placeholder="Search...">
     <div class="flags">
-        <img class="flag" v-for="(language, index) in languages" :src="'https://flagsapi.com/' + language.icon + '/flat/64.png'" alt="" @click="actualLang = language.code, actualLangIndex = index" :class="{active: index == actualLangIndex}">
+        <img class="flag" v-for="(language, index) in languages" :src="'https://flagsapi.com/' + language.icon + '/flat/64.png'" alt="" @click="actualLang = language.code, actualLangIndex = index, submit()" :class="{active: index == actualLangIndex}">
     </div>
 </header>
 </template>
@@ -71,7 +71,7 @@ header {
         border: none;
         background-color: rgb(60, 60, 60);
         border-radius: 10px;
-        opacity: .9;
+        opacity: .6;
         color: white;
     }
     .flags {
