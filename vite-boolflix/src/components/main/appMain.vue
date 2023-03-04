@@ -29,5 +29,7 @@ export default {
     main {
         background-color: rgb(30, 30, 30);
         color: white;
+        min-height: 90vh;
+        padding-top: 2rem;
     }
 </style>

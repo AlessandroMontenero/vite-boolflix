@@ -7,33 +7,64 @@ export default {
         store: Object,
         index: Number
     },
+    data() {
+        return{
+            showVideo: false,
+        }
+    },
     created() {
-        console.log(store)
+    },
+    methods: {
+        calcStar() {
+            let fullStars = '<i class="fa-solid fa-star"></i>' 
+            let emptyStars = '<i class="fa-regular fa-star"></i>'         
+            return fullStars.repeat(parseInt(this.cardData.vote_average / 2) ) + emptyStars.repeat(5 - parseInt(this.cardData.vote_average / 2))
+        },
+        langUp() {
+            for (let lang of store.languageToCountry) {
+                if (this.cardData.original_language == lang[0]) {
+                    return lang[1].toUpperCase()
+                }
+            }
+        }
     }
 }
 
 </script>
 
 <template>
-    <div class="card" >
+    <div class="card" @mouseover="showVideo = true" @mouseleave="showVideo = false">
         <div class="thumbImg">
             <img :src="'https://image.tmdb.org/t/p/w500/' + cardData.backdrop_path" alt="">
+            <div class="videoContainer" v-if="showVideo && this.cardData.url" >
+                <iframe frameborder="0" allow="autoplay"
+                    :src=" this.cardData.url +'?autoplay=1&mute=0&modestbranding=1&autohide=1&showinfo=0&controls=0&rel=0&amp;fs=0&amp;showinfo=0'">
+                </iframe>
+            </div>
         </div>
         <div class="cardHover">
             <div class="filmTitle">
-                <span class="title">{{ cardData.title }}</span>
-                <span class="originalTitle" v-if="cardData.original_title != cardData.title">{{ cardData.original_title }}</span>
+                <span class="title">
+                    {{ cardData.title }}
+                    {{ cardData.name }}
+                </span>
+                <span class="originalTitle" v-if="cardData.original_title != cardData.title || cardData.original_name != cardData.name ">
+                    {{ cardData.original_title }}
+                    {{ cardData.original_name }}
+                </span>
             </div>
             <div class="bottomHover">
                 <div class="categories">
-                    <span v-for="category, i in store.currentMoviesCategories[index]">
+                    <span v-for="category in cardData.genre">
                     {{ category }} &#160
                     </span>
                 </div>
                 <div class="otherInfo">
-                    {{ cardData.original_language }}
-                    {{ parseInt(cardData.vote_average / 2) }}
-                    ({{ cardData.vote_count }})
+                    <img :src="'https://flagsapi.com/' + langUp() + '/flat/64.png'" alt="">
+                    <span v-if="cardData.number_of_seasons">{{ cardData.number_of_seasons }} Seasons</span>
+                    <span class="star" v-html="calcStar()">
+                    </span>
+                    <span class="voteCount">({{ cardData.vote_count }})</span>
                 </div>
                 
             </div>
@@ -46,7 +77,7 @@ export default {
 <style lang="scss" scoped>
 .card {
     width: calc(95% / 6);
-    margin-right: auto;
+    margin-right: 10px;
     margin-bottom: 3rem;
     box-sizing: border-box;
     aspect-ratio: 12 / 7.5;
@@ -71,6 +102,7 @@ export default {
             .title {
                 width: 100%;
                 font-size: .8rem;
+                margin: -.5rem 0;
                 text-transform: uppercase;
                 opacity: .8;
                 max-height: 1.8rem;
@@ -104,15 +136,52 @@ export default {
                 font-size: .6rem;
                 opacity: .8;
                 display: flex;
+                align-items: flex-end;
                 justify-content: flex-end;
+                gap: 2px;
+                .voteCount {
+                    font-size: .4rem;
+                }
+                img {
+                    height: 14px;
+                    box-sizing: border-box;
+                    margin-bottom: -1px;
+                }
+                .star {
+                    margin-left: auto;
+                }
             }
         }
     }
     &:hover {
         transform: scale(1.5) translateY(-20%);
         z-index: 2;
-        img {
-            border-radius: 5px 5px 0 0;
+        .thumbImg {
+            position: relative;
+            img {
+                border-radius: 5px 5px 0 0;
+            }
+            .videoContainer {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 10;
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+                aspect-ratio: 16/9;
+                pointer-events: none;
+                border-radius: 5px 5px 0 0;
+                iframe {
+                    /* Extend it beyond the viewport... */
+                    width: 300%;
+                    height: 100%;
+                    /* ...and bring it back again */
+                    margin-left: -100%;
+
+                }
+
+            }
         }
         
         .cardHover {

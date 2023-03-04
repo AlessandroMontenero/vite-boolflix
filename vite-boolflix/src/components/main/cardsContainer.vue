@@ -1,6 +1,5 @@
 <script>
 import movieCard from './movieCard.vue'
-import tvCard from './tvCard.vue'
 import personCard from './personCard.vue'
 export default {
     props: {
@@ -8,7 +7,6 @@ export default {
     },
     components: {
         movieCard,
-        tvCard,
         personCard
     },
     methods: {
@@ -20,27 +18,43 @@ export default {
 
 <template>
     <div class="container">
-        <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index"/> <br>
+        <section class="movies" v-if="itemsData.currentMovies.length">
+            <span class="sectionTitle">Film</span>
+            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index"/> <br>
+        </section>
+        <section class="tv" v-if="itemsData.currentTV.length">
+            <span class="sectionTitle">TV Series</span>
+            <movieCard v-for="card in itemsData.currentTV" :card-data="card" /> <br>
+        </section>
+        <section class="person" v-if="itemsData.currentPerson.length">
+            <span class="sectionTitle">Peoples</span>
+            <personCard v-for="card in itemsData.currentPerson" :card-data="card" /> <br>
+        </section>
     </div>
-        serie tv
-        <tvCard v-for="card in itemsData.currentTV" :card-data="card" /> <br>
-        persone
-        <personCard v-for="card in itemsData.currentPerson" :card-data="card" /> <br>
-    film
+
+    
 
 
 </template>
 
 <style lang="scss" scoped>
     .container {
-        display: flex;
-        flex-wrap: wrap;
         box-sizing: border-box;
         width: 95%;
         margin: auto;
         justify-content: left;
         padding: 2rem;
-        padding-top: 5rem;
+        padding: 5rem 2rem 7rem;
+        .sectionTitle {
+            width: 100%;
+            margin: 1rem;
+            font-size: 2rem;
+            opacity: .7;
+        }
+        section {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
 
 </style>
