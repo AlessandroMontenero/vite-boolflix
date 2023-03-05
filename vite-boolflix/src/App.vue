@@ -19,10 +19,15 @@ export default {
     },
     methods: {
       newResearch(research){
+        store.showResearch = 0
+        store.showResearch = 1
         store.currentMovies = []
         store.currentPerson = []
         store.currentTV = []
         store.currentLang = research.lang
+        store.moviesToShow= 16
+        store.tvToShow= 16
+        store.peoplesToShow= 6
         axios.get(store.base_url + '/genre/movie/list?api_key=' + store.api_key +'&language='+research.lang)
         .then(function (response){
           store.allMovieCategories = response.data.genres

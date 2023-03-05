@@ -1,13 +1,13 @@
 <script>
-import hero from './hero.vue'
-import cardsContainer from './cardsContainer.vue'
+import home from './home.vue'
+import researchContainer from './researchContainer.vue'
 export default {
     props: {
         itemsData: Object
     },
     components: {
-        hero,
-        cardsContainer
+        home,
+        researchContainer
     },
     data() {
         return {
@@ -20,8 +20,8 @@ export default {
 
 <template>
     <main>
-        <hero />
-        <cardsContainer :items-data="itemsData" />
+        <home />
+        <researchContainer :items-data="itemsData" v-if="itemsData.showResearch"/>
     </main>
 </template>
 

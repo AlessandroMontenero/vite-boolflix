@@ -9,13 +9,6 @@ export default {
         movieCard,
         personCard
     },
-    data() {
-        return {
-            moviesToShow: 16,
-            tvToShow: 16,
-            peoplesToShow: 6,
-        }
-    }
 }
 </script>
 
@@ -23,23 +16,23 @@ export default {
     <div class="container">
         <section class="movies" v-if="itemsData.currentMovies.length">
             <span class="sectionTitle">Film</span>
-            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= moviesToShow"/> <br>
-            <div v-show="itemsData.currentMovies.length >= moviesToShow" class="showMore" @click="moviesToShow += 18"> 
+            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= itemsData.moviesToShow"/> <br>
+            <div v-show="itemsData.currentMovies.length >= itemsData.moviesToShow" class="showMore" @click="itemsData.moviesToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
         </section>
         <section class="tv" v-if="itemsData.currentTV.length">
             <span class="sectionTitle">TV Series</span>
-            <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" v-show="index <= tvToShow" /> 
-            <div v-show="itemsData.currentTV.length >= tvToShow" class="showMore" @click="tvToShow += 18"> 
+            <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" v-show="index <= itemsData.tvToShow" /> 
+            <div v-show="itemsData.currentTV.length >= itemsData.tvToShow" class="showMore" @click="itemsData.tvToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
 
         </section>
         <section class="person" v-if="itemsData.currentPerson.length" >
             <span class="sectionTitle">Peoples</span>
-            <personCard v-for="(card, index) in itemsData.currentPerson" :card-data="card" v-show="index <= peoplesToShow"/>
-            <div v-show="itemsData.currentPerson.length >= peoplesToShow" class="showMorePeople" @click="peoplesToShow += 8">
+            <personCard v-for="(card, index) in itemsData.currentPerson" :card-data="card" v-show="index <= itemsData.peoplesToShow"/>
+            <div v-show="itemsData.currentPerson.length >= itemsData.peoplesToShow" class="showMorePeople" @click="itemsData.peoplesToShow += 8">
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i>
             </div>

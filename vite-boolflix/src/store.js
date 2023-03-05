@@ -9,6 +9,10 @@ export const store = reactive({
         currentPerson: [],
         currentLang: 'it-IT',
         movieUrl: '',
+        showResearch: 0,
+        moviesToShow: 16,
+        tvToShow: 16,
+        peoplesToShow: 6,
         languageToCountry: [
             ["aa", "dj"],
             ["af", "za"],
