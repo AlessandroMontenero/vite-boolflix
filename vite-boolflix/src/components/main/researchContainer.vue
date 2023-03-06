@@ -9,11 +9,51 @@ export default {
         movieCard,
         personCard
     },
+    data() {
+        return {
+            sortType: 'popular',
+            sortOptions: [
+                { text: 'Most Popular', value: 'popular' },
+                { text: 'Name', value: 'name' },
+                { text: 'Latest', value: 'latest' }
+            ]
+        }
+    },
+    created() {
+        this.sortBy(this.sortType)
+    },
+    methods: {
+        sortBy(sortType) {
+            if (sortType == 'popular') {
+                this.itemsData.currentMovies.sort((movie1, movie2)=> (movie1.popularity > movie2.popularity) ? -1 : (movie1.popularity < movie2.popularity) ? 1 : 0)
+                this.itemsData.currentTV.sort((tv1, tv2)=> (tv1.popularity > tv2.popularity) ? -1 : (tv1.popularity < tv2.popularity) ? 1 : 0)
+                this.itemsData.currentPerson.sort((person1, person2)=> (person1.popularity > person2.popularity) ? -1 : (person1.popularity < person2.popularity) ? 1 : 0)
+            }
+            if (sortType == 'name') {
+                this.itemsData.currentMovies.sort((movie1, movie2)=> (movie1.title < movie2.title) ? -1 : (movie1.title > movie2.title) ? 1 : 0)
+                this.itemsData.currentTV.sort((tv1, tv2)=> (tv1.name < tv2.name) ? -1 : (tv1.name > tv2.name) ? 1 : 0)
+                this.itemsData.currentPerson.sort((person1, person2)=> (person1.name < person2.name) ? -1 : (person1.name > person2.name) ? 1 : 0)
+            }
+            if (sortType == 'latest') {
+                this.itemsData.currentTV.sort((tv1, tv2)=> {
+                    return tv2.first_air_date.localeCompare( tv1.first_air_date)
+                })
+                this.itemsData.currentMovies.sort((movie1, movie2)=> {
+                    return movie2.date.localeCompare( movie1.date)
+                })
+            }
+        }
+    }
 }
 </script>
 
 <template>
     <div class="container">
+        <div class="selectWrapper">
+            <select name="sortBy" id="sortBy" @change="sortBy(sortType)" v-model="sortType">
+                <option v-for="item in sortOptions" :value="item.value">{{item.text}}</option>
+            </select>
+        </div>
         <section class="movies" v-if="itemsData.currentMovies.length">
             <span class="sectionTitle">Film</span>
             <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= itemsData.moviesToShow"/> <br>
@@ -45,9 +85,20 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+    .selectWrapper {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+        select {
+            background-color: rgb(20, 20, 20);
+            color: white;
+            padding: .6rem;
+            opacity:  .7;
+        }
+    }
     .container {
-        box-sizing: border-box;
-        width: 95%;
+        width: 90%;
         margin: auto;
         justify-content: left;
         padding: 2rem;

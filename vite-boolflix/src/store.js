@@ -6,6 +6,7 @@ export const store = reactive({
         currentMovies: [],
         allMovieCategories: [],
         currentTV: [],
+        allTVCategories: [],
         currentPerson: [],
         currentLang: 'it-IT',
         movieUrl: '',

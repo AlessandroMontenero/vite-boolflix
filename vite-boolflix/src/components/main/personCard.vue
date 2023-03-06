@@ -4,9 +4,6 @@ import { store } from '../../store';
 export default {
     props: {
         cardData: Object
-    },
-    created() {
-        console.log(this.cardData)
     }
 }
 

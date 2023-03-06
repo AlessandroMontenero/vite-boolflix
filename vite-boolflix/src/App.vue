@@ -30,6 +30,10 @@ export default {
         axios.get(store.base_url + '/genre/movie/list?api_key=' + store.api_key +'&language='+research.lang)
         .then(function (response){
           store.allMovieCategories = response.data.genres
+          axios.get(store.base_url + '/genre/tv/list?api_key=' + store.api_key + '&language=' + research.lang)
+          .then(function (response){
+            store.allTVCategories = response.data.genres
+            console.log(store.allTVCategories)
           axios.get(store.base_url + 'search/multi?api_key=' + store.api_key + '&query=' + research.query +'&page=1&language=' + research.lang)
           .then(function (response) {
             for (let pages = 1; pages <= response.data.total_pages; pages++) {
@@ -64,13 +68,25 @@ export default {
                           })
                         }
                       })
-                      
+                      axios.get(store.base_url + 'movie/' + thisMovieID + 'release_dates?api_key=' + store.api_key)
+                      .then(function(response){
+                        newItem['date'] = response.data.release_date
+                      })
                       store.currentMovies.push(newItem)
                       i++
                     
                   }
                   
                   else if (newItem.media_type == "tv") {
+                    let thisTVCategories = []
+                    for (let genre of store.allTVCategories){
+                        for (let thisGenre of newItem.genre_ids) {
+                          if (thisGenre == genre.id) {
+                            thisTVCategories.push(genre.name)    
+                          } 
+                        }
+                        newItem['genre'] = thisTVCategories
+                      }
                     axios.get(store.base_url + 'tv/' + newItem.id + '?api_key=' + store.api_key + '&language='+  research.lang)
                     .then(function (response){
                       axios.get(store.base_url + 'tv/' + newItem.id + '/videos?api_key=' + store.api_key + '&language=' + research.lang)
@@ -88,15 +104,7 @@ export default {
                   }
                   
                   if (store.currentMovies.length || store.currentPerson.length || store.currentTV.length) {
-                    console.log(store)
-                    console.log(response.data.total_results)
-                    console.log(store.currentMovies.length + store.currentPerson.length + store.currentTV.length)
-                    
                     if (store.currentMovies.length + store.currentPerson.length + store.currentTV.length == response.data.total_results) {
-                      store.currentMovies.sort((movie1, movie2)=> (movie1.popularity > movie2.popularity) ? -1 : (movie1.popularity < movie2.popularity) ? 1 : 0)
-                      store.currentTV.sort((tv1, tv2)=> (tv1.popularity > tv2.popularity) ? -1 : (tv1.popularity < tv2.popularity) ? 1 : 0)
-                      store.currentPerson.sort((person1, person2)=> (person1.popularity > person2.popularity) ? -1 : (person1.popularity < person2.popularity) ? 1 : 0)
-
                       store.showResearch = 1
                     }
 
@@ -106,6 +114,7 @@ export default {
               })
             }
           })
+        })
         })
       }
     },
@@ -129,7 +138,9 @@ html, body {
 }
 
 #app {
-  width: 100%;
-  height: 100vh;
+  max-width: 100%;
+  max-height: 100vh;
+  box-sizing: border-box;
+
 }
 </style>
