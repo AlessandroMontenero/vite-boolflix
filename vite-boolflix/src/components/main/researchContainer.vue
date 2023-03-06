@@ -1,6 +1,8 @@
 <script>
 import movieCard from './movieCard.vue'
 import personCard from './personCard.vue'
+import { store } from '../../store';
+
 export default {
     props: {
         itemsData: Object
@@ -21,21 +23,22 @@ export default {
     },
     created() {
         this.sortBy(this.sortType)
+        console.log(store)
     },
     methods: {
         sortBy(sortType) {
             if (sortType == 'popular') {
-                this.itemsData.currentMovies.sort((movie1, movie2)=> (movie1.popularity > movie2.popularity) ? -1 : (movie1.popularity < movie2.popularity) ? 1 : 0)
-                this.itemsData.currentTV.sort((tv1, tv2)=> (tv1.popularity > tv2.popularity) ? -1 : (tv1.popularity < tv2.popularity) ? 1 : 0)
-                this.itemsData.currentPerson.sort((person1, person2)=> (person1.popularity > person2.popularity) ? -1 : (person1.popularity < person2.popularity) ? 1 : 0)
+                store.currentMovies.sort((movie1, movie2)=> (movie1.popularity > movie2.popularity) ? -1 : (movie1.popularity < movie2.popularity) ? 1 : 0)
+                store.currentTV.sort((tv1, tv2)=> (tv1.popularity > tv2.popularity) ? -1 : (tv1.popularity < tv2.popularity) ? 1 : 0)
+                store.currentPerson.sort((person1, person2)=> (person1.popularity > person2.popularity) ? -1 : (person1.popularity < person2.popularity) ? 1 : 0)
             }
             if (sortType == 'name') {
-                this.itemsData.currentMovies.sort((movie1, movie2)=> (movie1.title < movie2.title) ? -1 : (movie1.title > movie2.title) ? 1 : 0)
-                this.itemsData.currentTV.sort((tv1, tv2)=> (tv1.name < tv2.name) ? -1 : (tv1.name > tv2.name) ? 1 : 0)
-                this.itemsData.currentPerson.sort((person1, person2)=> (person1.name < person2.name) ? -1 : (person1.name > person2.name) ? 1 : 0)
+                store.currentMovies.sort((movie1, movie2)=> (movie1.title < movie2.title) ? -1 : (movie1.title > movie2.title) ? 1 : 0)
+                store.currentTV.sort((tv1, tv2)=> (tv1.name < tv2.name) ? -1 : (tv1.name > tv2.name) ? 1 : 0)
+                store.currentPerson.sort((person1, person2)=> (person1.name < person2.name) ? -1 : (person1.name > person2.name) ? 1 : 0)
             }
             if (sortType == 'latest') {
-                this.itemsData.currentTV.sort((tv1, tv2)=> {
+                store.currentTV.sort((tv1, tv2)=> {
                     return tv2.first_air_date.localeCompare( tv1.first_air_date)
                 })
                 this.itemsData.currentMovies.sort((movie1, movie2)=> {
