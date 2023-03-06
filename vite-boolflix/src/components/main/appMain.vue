@@ -1,13 +1,15 @@
 <script>
 import home from './homeContainer.vue'
 import researchContainer from './researchContainer.vue'
+import loading from './loading.vue'
 export default {
     props: {
         itemsData: Object
     },
     components: {
         home,
-        researchContainer
+        researchContainer,
+        loading
     },
     data() {
         return {
@@ -21,7 +23,8 @@ export default {
 <template>
     <main>
         <home />
-        <researchContainer :items-data="itemsData" v-if="itemsData.showResearch"/>
+        <researchContainer :items-data="itemsData" v-if="!itemsData.loading && itemsData.allMovieCategories.length"/>
+        <loading v-if="itemsData.loading" />
     </main>
 </template>
 

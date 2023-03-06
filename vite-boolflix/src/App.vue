@@ -19,7 +19,7 @@ export default {
     },
     methods: {
       newResearch(research){
-        store.showResearch = 0
+        store.loading = 1
         store.currentMovies = []
         store.currentPerson = []
         store.currentTV = []
@@ -105,7 +105,7 @@ export default {
                   
                   if (store.currentMovies.length || store.currentPerson.length || store.currentTV.length) {
                     if (store.currentMovies.length + store.currentPerson.length + store.currentTV.length == response.data.total_results) {
-                      store.showResearch = 1
+                      store.loading = 0
                     }
 
                   }
