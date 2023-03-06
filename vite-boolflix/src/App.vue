@@ -56,9 +56,19 @@ export default {
                       let thisMovieID = newItem.id
                       axios.get(store.base_url + 'movie/' + thisMovieID + '/videos?api_key=' + store.api_key + '&language=' + research.lang)
                       .then(function (response) {
-                        if (response.data.results[0]) {
-                          newItem['url'] = 'https://www.youtube.com/embed/' + response.data.results[0].key
-                        }
+                        axios.get(store.base_url + 'movie/'+ thisMovieID +'/credits?api_key=' + store.api_key + '&language=' + research.lang)
+                        .then(function(response){
+                            newItem['cast'] = response.data.cast
+                            for (let member of response.data.crew) {
+                              let direction = ''
+                                if (member.job == 'Director') {
+                                    direction += member.name + ' '
+                                    newItem['director'] = direction
+                                }
+                            }
+                            if (response.data.results[0]) {
+                              newItem['url'] = 'https://www.youtube.com/embed/' + response.data.results[0].key
+                            }
                         else {
                           axios.get(store.base_url + 'movie/' + thisMovieID + '/videos?api_key=' + store.api_key)
                           .then(function (response){
@@ -71,6 +81,7 @@ export default {
                       axios.get(store.base_url + 'movie/' + thisMovieID + 'release_dates?api_key=' + store.api_key)
                       .then(function(response){
                         newItem['date'] = response.data.release_date
+                      })
                       })
                       store.currentMovies.push(newItem)
                       i++

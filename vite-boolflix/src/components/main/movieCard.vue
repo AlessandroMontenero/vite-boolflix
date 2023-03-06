@@ -1,7 +1,11 @@
 <script>
 import axios from 'axios'
 import { store } from '../../store';
+import bigCard from './bigCard.vue'
 export default {
+    components: {
+        bigCard
+    },
     props: {
         cardData: Object,
         store: Object,
@@ -10,6 +14,7 @@ export default {
     data() {
         return{
             showVideo: false,
+            expanded: false
         }
     },
     created() {
@@ -32,9 +37,12 @@ export default {
 
 </script>
 
+
 <template>
-    <div class="card" @mouseover="showVideo = true" @mouseleave="showVideo = false">
+    <bigCard v-if="expanded" :data="cardData" @close=" expanded= false"/>
+    <div class="card" :id="'card'+index" @mouseover="showVideo = true" @mouseleave="showVideo = false" :class="{expanded: expanded}">
         <div class="thumbImg">
+            <i class="fa-solid fa-circle-chevron-down" @click="expanded = true"></i>
             <img v-if="cardData.backdrop_path" :src="'https://image.tmdb.org/t/p/w500/' + cardData.backdrop_path" alt="">
             <div v-else class="noImg"> {{cardData.title}}
                 {{ cardData.name }}
@@ -55,6 +63,11 @@ export default {
                     {{ cardData.original_title }}
                     {{ cardData.original_name }}
                 </span>
+            </div>
+            <div class="overview">
+                <span class="label">Release</span>: {{ cardData.date }} <br><br>
+                {{ cardData.overview }}
+
             </div>
             <div class="bottomHover">
                 <div class="categories">
@@ -87,7 +100,17 @@ export default {
     transform: scale(1);
     transition: transform .2s linear;
     z-index: 1;
+
+    .overview {
+        display: none;
+    }
     .thumbImg {
+        i { 
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
         height: 100%;
         img {
             border-radius: 5px;
@@ -109,6 +132,13 @@ export default {
     }
     .cardHover {
         display: none;
+        position: absolute;
+            flex-direction: column;
+            background-color: rgb(40, 40, 40);
+            border-radius: 0 0 5px 5px;
+            padding: 10px;
+            box-sizing: border-box;
+
         .filmTitle {
             display: flex;
             flex-direction: column;
@@ -131,6 +161,13 @@ export default {
                 overflow: hidden;
     
             }
+        }
+
+        .overview {
+            height: 100%;
+            margin: 1rem;
+            font-size: .9rem;
+            
         }
         .bottomHover {
             display: flex;
@@ -173,6 +210,11 @@ export default {
         z-index: 2;
         .thumbImg {
             position: relative;
+            i.fa-circle-chevron-down{
+                display: block;
+                z-index: 11;
+                opacity: .8;
+            }
             img {
                 border-radius: 5px 5px 0 0;
             }
@@ -200,15 +242,9 @@ export default {
         }
         
         .cardHover {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
             width: 100%;
             height: 70%;
-            background-color: rgb(40, 40, 40);
-            border-radius: 0 0 5px 5px;
-            padding: 10px;
-            box-sizing: border-box;
+            display: flex;
 
         }
     }
