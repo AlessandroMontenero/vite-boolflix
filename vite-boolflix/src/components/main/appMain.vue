@@ -1,5 +1,5 @@
 <script>
-import home from './home.vue'
+import home from './homeContainer.vue'
 import researchContainer from './researchContainer.vue'
 export default {
     props: {
@@ -29,7 +29,6 @@ export default {
     main {
         background-color: rgb(30, 30, 30);
         color: white;
-        min-height: 90vh;
-        padding-top: 2rem;
+        min-height: 100vh;
     }
 </style>

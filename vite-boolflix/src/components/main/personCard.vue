@@ -1,4 +1,6 @@
 <script>
+import { store } from '../../store';
+
 export default {
     props: {
         cardData: Object
@@ -43,12 +45,15 @@ export default {
         margin-left: 10px;
         border-radius: 10px;
         transition: all .1s linear;
+        overflow: hidden;
         picture {
             aspect-ratio: 1 / 1;
             overflow: hidden;
             border-radius: 50%;
-            height: 100px;
-            width: 100px;
+            min-height: 80px;
+            max-height: 80px;
+            min-width: 80px;
+            max-width: 80px;
             img {
                 width: 100%;
             }

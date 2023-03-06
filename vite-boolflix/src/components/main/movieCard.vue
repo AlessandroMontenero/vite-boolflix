@@ -35,7 +35,10 @@ export default {
 <template>
     <div class="card" @mouseover="showVideo = true" @mouseleave="showVideo = false">
         <div class="thumbImg">
-            <img :src="'https://image.tmdb.org/t/p/w500/' + cardData.backdrop_path" alt="">
+            <img v-if="cardData.backdrop_path" :src="'https://image.tmdb.org/t/p/w500/' + cardData.backdrop_path" alt="">
+            <div v-else class="noImg"> {{cardData.title}}
+                {{ cardData.name }}
+            </div>
             <div class="videoContainer" v-if="showVideo && this.cardData.url" >
                 <iframe frameborder="0" allow="autoplay"
                     :src=" this.cardData.url +'?autoplay=1&mute=0&modestbranding=1&autohide=1&showinfo=0&controls=0&rel=0&amp;fs=0&amp;showinfo=0'">
@@ -90,6 +93,18 @@ export default {
             border-radius: 5px;
             width: 100%;
             height: 100%;
+        }
+        .noImg {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(20, 20, 20);
+            border-radius: 5px;
+            padding: 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
         }
     }
     .cardHover {

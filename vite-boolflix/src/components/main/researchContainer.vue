@@ -17,14 +17,14 @@ export default {
         <section class="movies" v-if="itemsData.currentMovies.length">
             <span class="sectionTitle">Film</span>
             <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= itemsData.moviesToShow"/> <br>
-            <div v-show="itemsData.currentMovies.length >= itemsData.moviesToShow" class="showMore" @click="itemsData.moviesToShow += 18"> 
+            <div v-if="itemsData.currentMovies.length > itemsData.moviesToShow" class="showMore" @click="itemsData.moviesToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
         </section>
         <section class="tv" v-if="itemsData.currentTV.length">
             <span class="sectionTitle">TV Series</span>
             <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" v-show="index <= itemsData.tvToShow" /> 
-            <div v-show="itemsData.currentTV.length >= itemsData.tvToShow" class="showMore" @click="itemsData.tvToShow += 18"> 
+            <div v-if="itemsData.currentTV.length > itemsData.tvToShow" class="showMore" @click="itemsData.tvToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
 
@@ -32,7 +32,7 @@ export default {
         <section class="person" v-if="itemsData.currentPerson.length" >
             <span class="sectionTitle">Peoples</span>
             <personCard v-for="(card, index) in itemsData.currentPerson" :card-data="card" v-show="index <= itemsData.peoplesToShow"/>
-            <div v-show="itemsData.currentPerson.length >= itemsData.peoplesToShow" class="showMorePeople" @click="itemsData.peoplesToShow += 8">
+            <div v-if="itemsData.currentPerson.length > itemsData.peoplesToShow" class="showMorePeople" @click="itemsData.peoplesToShow += 8">
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i>
             </div>

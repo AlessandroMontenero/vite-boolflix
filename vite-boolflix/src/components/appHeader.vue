@@ -31,6 +31,7 @@ export default {
                 lang: this.actualLang,
                 activeIndex: 0
             }
+            this.query = ''
             this.$emit('newResearch', newResearch)
         }
     }
@@ -42,7 +43,7 @@ export default {
     <img src="src/images/logo.png" alt="" class="logo">
     <input type="text" v-model="query" v-on:keyup.enter="submit" placeholder="Search...">
     <div class="flags">
-        <img class="flag" v-for="(language, index) in languages" :src="'https://flagsapi.com/' + language.icon + '/flat/64.png'" alt="" @click="actualLang = language.code, actualLangIndex = index, submit()" :class="{active: index == actualLangIndex}">
+        <img class="flag" v-for="(language, index) in languages" :src="'https://flagsapi.com/' + language.icon + '/flat/64.png'" alt="" @click="actualLang = language.code, actualLangIndex = index" :class="{active: index == actualLangIndex}">
     </div>
 </header>
 </template>
@@ -66,13 +67,17 @@ header {
 
     input {
         height: 80%;
-        width: 20%;
+        width: 10%;
         padding: 0 1rem;
         border: none;
         background-color: rgb(60, 60, 60);
         border-radius: 10px;
         opacity: .6;
         color: white;
+        transition: width .1s linear;
+        &:focus-visible {
+            width: 20%;
+        }
     }
     .flags {
         margin: auto .6rem;
