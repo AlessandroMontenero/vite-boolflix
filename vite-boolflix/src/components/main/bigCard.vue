@@ -16,40 +16,43 @@ export default {
     created() {
         console.log(this.bigCardData)
         store.seasons = []
-        if (this.bigCardData.media_type == "movie"){
-            axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
-            .then(function(response){
-                store.reviews = []
-                store.reviews = response.data
-            })
-            axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
-            .then(function(response){
-                store.suggested = []
-                store.suggested = response.data.results
-            })
-        }
-        else {
-            axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
-            .then(function(response){
-                store.reviews = []
-                store.reviews = response.data
-            })
-            axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
-            .then(function(response){
-                store.suggested = []
-                store.suggested = response.data.results
-            })
-            for (let i = -1; i <= this.bigCardData.number_of_seasons; i++)
-            axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/season/'+ i +'?api_key=' + store.api_key +'&language='+ store.currentLang)
-            .then(function(response){
-                store.seasons.push(response.data)
-                store.seasons.sort((season1, season2)=> (season1.season_numbern < season2.season_numbern) ? -1 : (season1.season_numbern > season2.season_numbern) ? 1 : 0)
-            })
-        }
-    },
-    methods: {
-        close() {
-            this.$emit('closeCard')
+        if (this.bigCardData.media_type){
+
+            if (this.bigCardData.media_type == "movie"){
+                axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
+                .then(function(response){
+                    store.reviews = []
+                    store.reviews = response.data
+                })
+                axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
+                .then(function(response){
+                    store.suggested = []
+                    store.suggested = response.data.results
+                })
+            }
+            else {
+                axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
+                .then(function(response){
+                    store.reviews = []
+                    store.reviews = response.data
+                })
+                axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
+                .then(function(response){
+                    store.suggested = []
+                    store.suggested = response.data.results
+                })
+                for (let i = -1; i <= this.bigCardData.number_of_seasons; i++)
+                axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/season/'+ i +'?api_key=' + store.api_key +'&language='+ store.currentLang)
+                .then(function(response){
+                    store.seasons.push(response.data)
+                    store.seasons.sort((season1, season2)=> (season1.season_numbern < season2.season_numbern) ? -1 : (season1.season_numbern > season2.season_numbern) ? 1 : 0)
+                })
+            }
+            }
+        },
+        methods: {
+            close() {
+                this.$emit('closeCard')
         }
     }
 }
@@ -299,6 +302,7 @@ export default {
                             margin: 10px 0;
                             display: flex;
                             gap: 10px;
+                            flex-wrap: wrap;
                             span {
                                 background-color: rgb(50, 50, 50);
                                 padding: 8px;

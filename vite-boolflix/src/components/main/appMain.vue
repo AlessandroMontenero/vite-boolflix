@@ -22,8 +22,8 @@ export default {
 
 <template>
     <main>
-        <home />
-        <researchContainer :items-data="itemsData" v-if="!itemsData.loading && itemsData.allMovieCategories.length"/>
+        <home v-if="!itemsData.loading && itemsData.showHome"/>
+        <researchContainer :items-data="itemsData" v-if="!itemsData.loading && !itemsData.showHome"/>
         <loading v-if="itemsData.loading" />
     </main>
 </template>
@@ -33,5 +33,6 @@ export default {
         background-color: rgb(30, 30, 30);
         color: white;
         min-height: 100vh;
+        padding-top: 10vh;
     }
 </style>

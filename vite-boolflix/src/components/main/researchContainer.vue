@@ -140,7 +140,7 @@ export default {
         margin: auto;
         justify-content: left;
         padding: 2rem;
-        padding: 5rem 2rem 7rem;
+        padding: 3rem 2rem 7rem;
         .sectionTitle {
             width: 100%;
             margin: 1rem;

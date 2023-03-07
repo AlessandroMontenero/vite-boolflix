@@ -19,6 +19,7 @@ export default {
     },
     methods: {
       newResearch(research){
+        store.showHome = 0
         store.loading = 1
         store.currentMovies = []
         store.currentPerson = []
@@ -142,6 +143,14 @@ export default {
       }
     },
     created() {
+      axios.get(store.base_url + '/genre/movie/list?api_key=' + store.api_key +'&language='+ store.currentLang)
+        .then(function (response){
+          store.allMovieCategories = response.data.genres
+          axios.get(store.base_url + '/genre/tv/list?api_key=' + store.api_key + '&language=' + store.currentLang)
+          .then(function (response){
+            store.allTVCategories = response.data.genres
+          })
+        })
     }
   }
   
