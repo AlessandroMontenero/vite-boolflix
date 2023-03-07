@@ -33,7 +33,6 @@ export default {
             .then(function(response){
                 store.reviews = []
                 store.reviews = response.data
-                console.log(response)
             })
             axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
@@ -44,6 +43,7 @@ export default {
             axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/season/'+ i +'?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
                 store.seasons.push(response.data)
+                store.seasons.sort((season1, season2)=> (season1.season_numbern < season2.season_numbern) ? -1 : (season1.season_numbern > season2.season_numbern) ? 1 : 0)
             })
         }
     },
@@ -83,7 +83,7 @@ export default {
                             </div>
                             <div class="detailsLine" v-if="bigCardData.release_date">
                                 <span>RELEASE DATE:</span>
-                                <span>{{bigCardData.release_date}}</span>
+                                <span>{{new Date(bigCardData.release_date).toLocaleDateString(store.currentLang)}}</span>
                             </div>
                             <div class="detailsLine" v-if="bigCardData.first_air_date">
                                 <span>FIRST AIR DATE:</span>
@@ -91,7 +91,7 @@ export default {
                             </div>
                             <div class="detailsLine">
                                 <span>RATINGS:</span>
-                                <span>{{bigCardData.vote_average}} / 10 ({{ bigCardData.vote_count }})</span>
+                                <span>{{Math.round(bigCardData.vote_average * 10) / 10}} / 10 ({{ bigCardData.vote_count }})</span>
                             </div>
                             <div class="detailsLine">
                                 <span>ORIGINAL LANGUAGE:</span>
@@ -136,10 +136,10 @@ export default {
                 <iframe frameborder="0" allow="autoplay" v-if="bigCardData.url"
                     :src=" bigCardData.url +'?autoplay=0&mute=0'">
                 </iframe>
-                <div class="section detailsLine">
+                <div class="section detailsLine"  v-if="bigCardData.cast">
                     <span>CAST</span>
                 </div>
-                <div class="cast">
+                <div class="cast" v-if="bigCardData.cast">
                     <div v-for="member in bigCardData.cast" class="member">
                         <img v-if="member.profile_path" :src="'https://image.tmdb.org/t/p/w500/' + member.profile_path" alt="" class="memberImg">
                         <div v-else class="noImg">
@@ -171,7 +171,7 @@ export default {
                                     {{ review.author }}
                                 </span>
                                 <span>
-                                    {{ review.created_at }}
+                                    {{ new Date(review.created_at).toLocaleDateString(store.currentLang) }}
                                 </span>
                             </div>
                             <div class="content">
@@ -304,6 +304,7 @@ export default {
                                 padding: 8px;
                                 border-radius: 10px;
                                 opacity: .8;
+                                white-space: nowrap;
                             }
                         }
                         .detailsLine {
