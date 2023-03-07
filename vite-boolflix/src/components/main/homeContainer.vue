@@ -12,8 +12,9 @@
             return {
                 store,
                 bigCardIndex: 0,
-            bigTrendingCardShow: false,
-            bigNowPlayingCardShow: false,
+                bigMovieCardShow: false,
+            bigTVCardShow: false,
+            bigTrendingShow: false
             }
         },
         created(){
@@ -100,6 +101,7 @@
                                 }
                             }
                         })
+
                         store.home.trending.push(newItem)
                       i++
 
@@ -154,6 +156,7 @@
                       .then(function(response){
                         newItem['date'] = response.data.release_date
                       })
+                      newItem['media_type'] = 'movie'
                       store.home.nowPlaying.push(newItem)
                       i++
                     
@@ -189,7 +192,7 @@
             <div class="cardCont">
                 <movieCard v-for="(card, index) in store.home.trending" :card-data="card" :index="index" v-show="index < 12" @expanded="handleExpanded"/> <br>
                 <Transition>
-                    <bigCard :big-card-data="store.home.trending[bigCardIndex.index]" v-if="bigMovieCardShow || bigTVCardShow" @close-card="bigMovieCardShow = false, bigTVCardShow = false"/>
+                    <bigCard :big-card-data="store.home.trending[bigCardIndex.index]" v-if="(bigMovieCardShow || bigTVCardShow)" @close-card="bigMovieCardShow = false, bigTVCardShow = false"/>
                 </Transition>
             </div>
         </section>
@@ -198,10 +201,10 @@
         </div>
         <section class="trending">
             <div class="cardCont">
-                <movieCard v-for="(card, index) in store.home.nowPlaying" :card-data="card" :index="index" v-show="index < 12" @expanded="handleExpanded, bigNowPlayingCardShow = true"/> <br>
-                <Transition>
-                    <bigCard :big-card-data="store.home.nowPlaying[bigCardIndex.index]" v-if="bigNowPlayingCardShow" @close-card="bigNowPlayingCardShow = false"/>
-                </Transition>
+                <movieCard v-for="(card, index) in store.home.nowPlaying" :card-data="card" :index="index" v-show="index < 12" @expanded="handleExpanded"/> <br>
+                <!-- <Transition>
+                    <bigCard :big-card-data="store.home.nowPlaying[bigCardIndex.index]" v-if="(bigMovieCardShow || bigTVCardShow)" @close-card="bigMovieCardShow = false, bigTVCardShow = false"/>
+                </Transition> -->
             </div>
         </section>
     </div>
