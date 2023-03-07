@@ -16,6 +16,7 @@ export const store = reactive({
         peoplesToShow: 6,
         reviews: [],
         suggested: [],
+        seasons: [],
         languageToCountry: [
             ["aa", "dj"],
             ["af", "za"],

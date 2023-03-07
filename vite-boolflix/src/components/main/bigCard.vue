@@ -10,9 +10,12 @@ export default {
         return {
             store,
             director: '',
+            watchSeasonIndex: null,
         }
     },
     created() {
+        console.log(this.bigCardData)
+        store.seasons = []
         if (this.bigCardData.media_type == "movie"){
             axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
@@ -21,20 +24,26 @@ export default {
             })
             axios.get(store.base_url + 'movie/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
+                store.suggested = []
                 store.suggested = response.data.results
-                console.log(response)
             })
         }
         else {
             axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/reviews?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
                 store.reviews = []
-                store.reviews = response.data.results
+                store.reviews = response.data
+                console.log(response)
             })
             axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/similar?api_key=' + store.api_key +'&language='+ store.currentLang)
             .then(function(response){
+                store.suggested = []
                 store.suggested = response.data.results
-                console.log(response)
+            })
+            for (let i = -1; i <= this.bigCardData.number_of_seasons; i++)
+            axios.get(store.base_url + 'tv/'+ this.bigCardData.id +'/season/'+ i +'?api_key=' + store.api_key +'&language='+ store.currentLang)
+            .then(function(response){
+                store.seasons.push(response.data)
             })
         }
     },
@@ -72,26 +81,25 @@ export default {
                                     {{ bigCardData.director }}
                                 </span>
                             </div>
-                            <div class="detailsLine">
-                                <span>GENRES:</span>
-                                <span v-for="genre in bigCardData.genre">{{genre}}</span>
-                            </div>
                             <div class="detailsLine" v-if="bigCardData.release_date">
                                 <span>RELEASE DATE:</span>
                                 <span>{{bigCardData.release_date}}</span>
                             </div>
                             <div class="detailsLine" v-if="bigCardData.first_air_date">
-                            <span>FIRST AIR DATE:</span>
-                            <span>{{bigCardData.first_air_date}}</span>
-                        </div>
-                        <div class="detailsLine">
-                            <span>RATINGS:</span>
-                            <span>{{bigCardData.vote_average}} / 10 ({{ bigCardData.vote_count }})</span>
-                        </div>
-                        <div class="detailsLine">
-                            <span>ORIGINAL LANGUAGE:</span>
-                            <span>{{bigCardData.original_language.toUpperCase()}}</span>
-                        </div>
+                                <span>FIRST AIR DATE:</span>
+                                <span>{{bigCardData.first_air_date}}</span>
+                            </div>
+                            <div class="detailsLine">
+                                <span>RATINGS:</span>
+                                <span>{{bigCardData.vote_average}} / 10 ({{ bigCardData.vote_count }})</span>
+                            </div>
+                            <div class="detailsLine">
+                                <span>ORIGINAL LANGUAGE:</span>
+                                <span>{{bigCardData.original_language.toUpperCase()}}</span>
+                            </div>
+                            <div class="genres">
+                                <span v-for="genre in bigCardData.genre">{{genre}}</span>
+                            </div>
                         <div class="detailsLine">
                             <span>OVERVIEW:</span>
                         </div>
@@ -99,20 +107,35 @@ export default {
                     </div>
                 </div>
                 <br>
+                <div class="seasons" v-if="bigCardData.seasons">
+                    <div class="section detailsLine">
+                        <span>{{ bigCardData.number_of_seasons }} SEASONS</span>
+                    </div>
+                    
+                    <div class="season" v-for="(season, index) in store.seasons" :class="{seasonExpanded: (index == watchSeasonIndex)}">
+                        <div class="seasonName">
+                            <span>{{ season.name }}</span>
+                            <i class="fa-solid fa-circle-chevron-down" @click="watchSeasonIndex = index" v-if="watchSeasonIndex != index"></i>
+                            <i class="fa-solid fa-circle-chevron-up" @click="watchSeasonIndex = null" v-if="watchSeasonIndex == index"></i>
+                        </div>
+                        <div class="seasonContent">
+                            <div class="episode" v-for="episode in season.episodes">
+                                <div class="episodeContent">
+                                    <div class="episodeName">
+                                        {{episode.episode_number}}. {{ episode.name }}
+                                    </div>
+                                    <div class="episodeOverview">
+                                        {{ episode.overview }}
+                                    </div>
+                                </div>
+                                <img :src="'https://image.tmdb.org/t/p/w300/' + episode.still_path" alt="" v-if="episode.still_path">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <iframe frameborder="0" allow="autoplay" v-if="bigCardData.url"
                     :src=" bigCardData.url +'?autoplay=0&mute=0'">
                 </iframe>
-                <div class="section detailsLine">
-                    <span>SUGGESTED</span>
-                </div>
-                <div class="suggested">
-                    <div v-for="suggestion in store.suggested" class="suggestion" v-show="suggestion.poster_path">
-                        <img :src="'https://image.tmdb.org/t/p/original/' + suggestion.poster_path" alt="">
-                        {{ suggestion.title }}
-                        {{ suggestion.name }}
-
-                    </div>
-                </div>
                 <div class="section detailsLine">
                     <span>CAST</span>
                 </div>
@@ -123,6 +146,17 @@ export default {
                             <i class="fa-solid fa-question"></i>
                         </div>
                         {{member.name}}
+                    </div>
+                </div>
+                <div class="section detailsLine">
+                    <span>SUGGESTED</span>
+                </div>
+                <div class="suggested">
+                    <div v-for="suggestion in store.suggested" class="suggestion" v-show="suggestion.poster_path">
+                        <img :src="'https://image.tmdb.org/t/p/original/' + suggestion.poster_path" alt="">
+                        {{ suggestion.title }}
+                        {{ suggestion.name }}
+
                     </div>
                 </div>
                 <div class="reviews">
@@ -261,6 +295,17 @@ export default {
                         width: 50%;
                         display: flex;
                         flex-direction: column;
+                        .genres {
+                            margin: 10px 0;
+                            display: flex;
+                            gap: 10px;
+                            span {
+                                background-color: rgb(50, 50, 50);
+                                padding: 8px;
+                                border-radius: 10px;
+                                opacity: .8;
+                            }
+                        }
                         .detailsLine {
                             display: flex;
                             flex-wrap: wrap;
@@ -278,6 +323,7 @@ export default {
                             width: 70%;
                             margin-right: 1rem;
                             align-self: center;
+
                         }
                     }
                 }
@@ -296,6 +342,87 @@ export default {
                     aspect-ratio: 16/9;
                     margin: 2rem 50%;
                     transform: translateX(-50%);
+                }
+
+                .seasons {
+                    .season {
+                        height: 2rem;
+                        margin: 1rem;
+                        padding: 10px;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgb(50, 50, 50);
+                        border-radius: 10px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        align-items: center;
+                        i {
+                            position: relative;
+                            font-size: 1.5rem;
+                            top: 0;
+                        }
+                        .seasonName {
+                            display: flex;
+                            width: 100%;
+                            justify-content: space-between;
+                        }
+                        .seasonContent {
+                            display: none;
+                        }
+                        &.seasonExpanded .seasonContent {
+                            display: flex;
+                            width: 90%;
+                            flex-direction: column;
+                            margin-top: 1rem;
+
+                            .episode {
+                                width: 100%;
+                                margin: 1rem 0;
+                                display: flex;
+                                justify-content: space-between;
+                                gap: 10px;
+                                background-color: rgb(40, 40, 40);
+                                padding: .8rem;
+                                border-radius: 10px;
+                                img {
+                                    width: 150px;
+                                    height: 150px;
+                                    object-fit: cover;
+                                    border-radius: 10px;
+                                    margin-left: 1rem;
+                                }
+                            }
+                            .episodeContent{
+                                width: 100%;
+                            }
+                            .episodeName {
+                                width: 100%;
+                                margin-left: auto;
+                                padding: .5rem;
+                                border-bottom: 5px solid rgb(30, 30, 30);
+                            }
+                            .episodeOverview {
+                                margin-top: .5rem;
+                                max-height: 200px;
+                                overflow-y: scroll;
+                                opacity: .8;
+                                font-style: italic;
+                                &::-webkit-scrollbar {
+                                    width: 10px;               /* width of the entire scrollbar */
+                                  }
+                                  
+                                  &::-webkit-scrollbar-track {
+                                    background: rgba(240,240,240, 0);        /* color of the tracking area */
+                                }
+                                
+                                &::-webkit-scrollbar-thumb {
+                                    background-color: rgb(30, 30, 30);    /* color of the scroll thumb */
+                                    border-radius: 20px;       /* roundness of the scroll thumb */
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 .section.detailsLine {

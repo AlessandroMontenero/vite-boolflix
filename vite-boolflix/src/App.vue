@@ -106,6 +106,7 @@ export default {
                         }
                       })
                       newItem['number_of_seasons'] = response.data.number_of_seasons
+                      newItem['seasons'] = response.data.seasons
                     })
                     axios.get(store.base_url + 'tv/'+ newItem.id +'/credits?api_key=' + store.api_key + '&language=' + research.lang)
                         .then(function(response){
