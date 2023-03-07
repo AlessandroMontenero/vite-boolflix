@@ -1,6 +1,7 @@
 <script>
 import movieCard from './movieCard.vue'
 import personCard from './personCard.vue'
+import bigCard from './bigCard.vue'
 import { store } from '../../store';
 
 export default {
@@ -9,11 +10,16 @@ export default {
     },
     components: {
         movieCard,
-        personCard
+        personCard,
+        bigCard
     },
     data() {
         return {
+            store,
             sortType: 'popular',
+            bigCardIndex: 0,
+            bigMovieCardShow: false,
+            bigTVCardShow: false,
             sortOptions: [
                 { text: 'Most Popular', value: 'popular' },
                 { text: 'Name', value: 'name' },
@@ -23,9 +29,17 @@ export default {
     },
     created() {
         this.sortBy(this.sortType)
-        console.log(store)
     },
     methods: {
+        handleExpanded(response) {
+            this.bigCardIndex = response
+            if (this.bigCardIndex.type == 'movie'){
+                this.bigMovieCardShow = true
+            }
+            if (this.bigCardIndex.type == 'tv'){
+                this.bigTVCardShow = true
+            }
+        },
         sortBy(sortType) {
             if (sortType == 'popular') {
                 store.currentMovies.sort((movie1, movie2)=> (movie1.popularity > movie2.popularity) ? -1 : (movie1.popularity < movie2.popularity) ? 1 : 0)
@@ -59,14 +73,20 @@ export default {
         </div>
         <section class="movies" v-if="itemsData.currentMovies.length">
             <span class="sectionTitle">Film</span>
-            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :store="itemsData" :index="index" v-show="index <= itemsData.moviesToShow"/> <br>
+            <movieCard v-for="(card, index) in itemsData.currentMovies" :card-data="card" :index="index" v-show="index <= itemsData.moviesToShow" @expanded="handleExpanded"/> <br>
+            <Transition>
+                <bigCard :big-card-data="itemsData.currentMovies[bigCardIndex.index]" v-if="bigMovieCardShow" @close-card="bigMovieCardShow = false"/>
+            </Transition>
             <div v-if="itemsData.currentMovies.length > itemsData.moviesToShow" class="showMore" @click="itemsData.moviesToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
         </section>
         <section class="tv" v-if="itemsData.currentTV.length">
             <span class="sectionTitle">TV Series</span>
-            <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" v-show="index <= itemsData.tvToShow" /> 
+            <movieCard v-for="(card, index) in itemsData.currentTV" :card-data="card" :index="index" v-show="index <= itemsData.tvToShow" @expanded="handleExpanded"/> 
+            <Transition>
+            <bigCard :big-card-data="itemsData.currentTV[bigCardIndex.index]" v-if="bigTVCardShow" @close-card="bigTVCardShow = false"/>
+            </Transition>
             <div v-if="itemsData.currentTV.length > itemsData.tvToShow" class="showMore" @click="itemsData.tvToShow += 18"> 
                 SHOW MORE
                 <i class="fa-solid fa-arrow-right"></i></div>
@@ -88,6 +108,21 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+
+.v-enter-active,
+.v-leave-active {
+    transform: translateY(0vh);
+  transition: all .2s linear;
+}
+
+.v-enter-from {
+    transform: translateY(60vh);
+
+}
+.v-leave-to {
+  opacity: 0;
+  transform: translateY(60vh);
+}
     .selectWrapper {
         width: 100%;
         display: flex;

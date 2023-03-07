@@ -33,7 +33,6 @@ export default {
           axios.get(store.base_url + '/genre/tv/list?api_key=' + store.api_key + '&language=' + research.lang)
           .then(function (response){
             store.allTVCategories = response.data.genres
-            console.log(store.allTVCategories)
           axios.get(store.base_url + 'search/multi?api_key=' + store.api_key + '&query=' + research.query +'&page=1&language=' + research.lang)
           .then(function (response) {
             for (let pages = 1; pages <= response.data.total_pages; pages++) {
@@ -58,7 +57,6 @@ export default {
                       .then(function (response) {
                         axios.get(store.base_url + 'movie/'+ thisMovieID +'/credits?api_key=' + store.api_key + '&language=' + research.lang)
                         .then(function(response){
-                            console.log(response)
                             newItem['cast'] = response.data.cast
                             for (let member of response.data.crew) {
                               let direction = ''
@@ -109,6 +107,18 @@ export default {
                       })
                       newItem['number_of_seasons'] = response.data.number_of_seasons
                     })
+                    axios.get(store.base_url + 'tv/'+ newItem.id +'/credits?api_key=' + store.api_key + '&language=' + research.lang)
+                        .then(function(response){
+                            console.log(response)
+                            newItem['cast'] = response.data.cast
+                            for (let member of response.data.crew) {
+                              let direction = ''
+                                if (member.job == 'Director') {
+                                    direction += member.name + ' '
+                                    newItem['director'] = direction
+                                }
+                            }
+                        })
                     store.currentTV.push(newItem)
                   }
                   else if (newItem.media_type == "person") {

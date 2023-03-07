@@ -14,6 +14,8 @@ export const store = reactive({
         moviesToShow: 16,
         tvToShow: 16,
         peoplesToShow: 6,
+        reviews: [],
+        suggested: [],
         languageToCountry: [
             ["aa", "dj"],
             ["af", "za"],

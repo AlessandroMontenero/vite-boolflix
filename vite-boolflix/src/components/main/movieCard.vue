@@ -1,25 +1,26 @@
 <script>
-import axios from 'axios'
 import { store } from '../../store';
-import bigCard from './bigCard.vue'
 export default {
-    components: {
-        bigCard
-    },
     props: {
         cardData: Object,
-        store: Object,
         index: Number
     },
     data() {
         return{
+            store,
+            expandedIndex: 0,
             showVideo: false,
-            expanded: false
+            bigCardData: {},
         }
     },
     created() {
+        this.bigCardData = this.cardData
     },
     methods: {
+        expanded() {
+            this.expandedIndex = this.index
+            this.$emit("expanded", {index: this.expandedIndex, type: this.cardData.media_type})
+        },
         calcStar() {
             let fullStars = '<i class="fa-solid fa-star"></i>' 
             let emptyStars = '<i class="fa-regular fa-star"></i>'         
@@ -39,10 +40,9 @@ export default {
 
 
 <template>
-    <bigCard v-if="expanded" :data="cardData" @close=" expanded= false"/>
     <div class="card" :id="'card'+index" @mouseover="showVideo = true" @mouseleave="showVideo = false" :class="{expanded: expanded}">
         <div class="thumbImg">
-            <i class="fa-solid fa-circle-chevron-down" @click="expanded = true"></i>
+            <i class="fa-solid fa-circle-chevron-down" @click="expanded()"></i>
             <img v-if="cardData.backdrop_path" :src="'https://image.tmdb.org/t/p/w500/' + cardData.backdrop_path" alt="">
             <div v-else class="noImg"> {{cardData.title}}
                 {{ cardData.name }}
@@ -166,8 +166,7 @@ export default {
         .overview {
             height: 100%;
             margin: 1rem;
-            font-size: .9rem;
-            
+            font-size: .9rem;            
         }
         .bottomHover {
             display: flex;
